@@ -138,8 +138,8 @@ class Api {
       .then(getResponse)
   }
   }
-  // В production используется REACT_APP_API_URL из .env.production
-  const api = new Api(process.env.REACT_APP_API_URL || 'http://localhost:3000');
-
+  // Замените на адрес вашего бэкенда
+  const api = new Api('http://localhost:3000');
+  
   export default api;
   

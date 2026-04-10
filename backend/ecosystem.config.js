@@ -6,7 +6,7 @@ module.exports = {
   apps: [
     {
       name: "backend",
-      script: "./src/app.ts",
+      script: "./dist/app.js",
       instances: "max",
       exec_mode: "cluster",
       watch: true,
@@ -27,7 +27,7 @@ module.exports = {
       path: process.env.DEPLOY_PATH,
       key: process.env.DEPLOY_KEY,
       "post-deploy":
-        "cd backend && npm install && pm2 startOrRestart ecosystem.config.js --env production",
+        "cd backend && npm install && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
     },
   },
 };

@@ -27,7 +27,7 @@ module.exports = {
       path: process.env.DEPLOY_PATH,
       key: process.env.DEPLOY_KEY,
       "post-deploy":
-        "npm install && pm2 startOrRestart ecosystem.config.js --env production",
+        "cd backend && npm install && pm2 startOrRestart ecosystem.config.js --env production",
     },
   },
 };

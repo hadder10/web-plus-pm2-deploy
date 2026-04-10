@@ -13,7 +13,7 @@ module.exports = {
       repo: process.env.DEPLOY_REPO,
       path: process.env.DEPLOY_PATH,
       key: process.env.DEPLOY_KEY,
-      "post-deploy": "npm install && npm run build",
+      "post-deploy": "cd frontend && npm install && npm run build",
     },
   },
 };

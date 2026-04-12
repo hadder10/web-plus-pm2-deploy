@@ -6,7 +6,7 @@ module.exports = {
   apps: [
     {
       name: "backend",
-      script: "./dist/app.js",
+      script: "./src/app.ts",
       instances: "max",
       exec_mode: "cluster",
       watch: false,

@@ -29,7 +29,7 @@ module.exports = {
       key: process.env.DEPLOY_KEY,
 
       "pre-deploy-local": `
-        scp -i \${key} ../../.env.deploy \${user}@\${host}:\${path}/current/backend/.env.deploy &&
+        scp -i \${key} ../.env.deploy \${user}@\${host}:\${path}/current/backend/.env.deploy &&
         scp -i \${key} .env \${user}@\${host}:\${path}/current/backend/.env
       `,
 

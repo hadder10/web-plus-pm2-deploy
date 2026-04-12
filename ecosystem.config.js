@@ -11,6 +11,10 @@ module.exports = {
       instances: "max",
       exec_mode: "cluster",
       watch: false,
+      max_memory_restart: "500M",
+      autorestart: true,
+      max_restarts: 10,
+      min_uptime: "10s",
       env: {
         NODE_ENV: "development",
       },
@@ -27,8 +31,9 @@ module.exports = {
       repo: process.env.DEPLOY_REPO,
       path: process.env.DEPLOY_PATH,
       key: process.env.DEPLOY_KEY,
+      "pre-deploy": "scp -i ${key} .env.deploy ${user}@${host}:${path}/",
       "post-deploy":
-        "cd frontend && npm install && npm run build && cd ../backend && npm install && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
+        "cd backend && npm install && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
     },
   },
 };

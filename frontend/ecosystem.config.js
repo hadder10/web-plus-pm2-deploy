@@ -13,8 +13,7 @@ module.exports = {
       repo: process.env.DEPLOY_REPO,
       path: process.env.DEPLOY_PATH,
       key: process.env.DEPLOY_KEY,
-      "pre-deploy":
-        "scp -i ${key} .env.deploy ${user}@${host}:${path}/frontend/",
+      "pre-deploy": `scp -i \${key} .env.deploy \${user}@\${host}:\${path}/frontend/`,
       "post-deploy": "npm install && npm run build",
     },
   },

@@ -3,6 +3,8 @@ require("dotenv").config({
   path: path.join(__dirname, "../.env.deploy"),
 });
 
+const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_KEY } = process.env;
+
 module.exports = {
   apps: [
     {
@@ -18,18 +20,15 @@ module.exports = {
       },
     },
   ],
-
   deploy: {
     production: {
-      user: process.env.DEPLOY_USER,
-      host: process.env.DEPLOY_HOST,
+      user: DEPLOY_USER,
+      host: DEPLOY_HOST,
       ref: process.env.DEPLOY_REF,
       repo: process.env.DEPLOY_REPO,
-      path: process.env.DEPLOY_PATH,
-      key: process.env.DEPLOY_KEY,
-
-      "pre-deploy-local":
-        "scp -i ${process.env.DEPLOY_KEY} ../.env.deploy ${process.env.DEPLOY_USER}@${process.env.DEPLOY_HOST}:${process.env.DEPLOY_PATH}/current/backend/.env.deploy && scp -i ${process.env.DEPLOY_KEY} .env ${process.env.DEPLOY_USER}@${process.env.DEPLOY_HOST}:${process.env.DEPLOY_PATH}/current/backend/.env",
+      path: DEPLOY_PATH,
+      key: DEPLOY_KEY,
+      "pre-deploy-local": `scp -i "${DEPLOY_KEY}" ../.env.deploy "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/current/backend/.env.deploy" && scp -i "${DEPLOY_KEY}" .env "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/current/backend/.env"`,
       "post-deploy":
         "cd backend && npm ci --only=production && npm run build && pm2 startOrRestart backend/ecosystem.config.js --env production",
     },

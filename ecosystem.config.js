@@ -1,12 +1,13 @@
+const path = require("path");
 require("dotenv").config({
-  path: require("path").join(__dirname, ".env.deploy"),
+  path: path.join(__dirname, ".env.deploy"),
 });
 
 module.exports = {
   apps: [
     {
       name: "backend",
-      script: "./dist/app.js",
+      script: "./backend/dist/app.js",
       instances: "max",
       exec_mode: "cluster",
       watch: false,
@@ -27,7 +28,7 @@ module.exports = {
       path: process.env.DEPLOY_PATH,
       key: process.env.DEPLOY_KEY,
       "post-deploy":
-        "cd backend && npm install && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
+        "cd frontend && npm install && npm run build && cd ../backend && npm install && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
     },
   },
 };

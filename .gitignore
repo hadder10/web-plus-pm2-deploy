@@ -1,7 +1,6 @@
-.idea
-node_modules
-*.log
-build
-dist
 .env
 .env.deploy
+backend/.env
+backend/dist
+frontend/build
+node_modules

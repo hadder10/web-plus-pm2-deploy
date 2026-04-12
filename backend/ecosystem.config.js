@@ -1,27 +1,24 @@
+const path = require("path");
 require("dotenv").config({
-  path: require("path").join(__dirname, ".env.deploy"),
+  path: path.join(__dirname, "../../.env.deploy"),
 });
 
 module.exports = {
   apps: [
     {
       name: "backend",
-      script: "./src/app.ts",
+      script: "dist/app.js",
       instances: "max",
       exec_mode: "cluster",
-      watch: false,
-      max_memory_restart: "500M",
       autorestart: true,
-      max_restarts: 10,
-      min_uptime: "10s",
-      env: {
-        NODE_ENV: "development",
-      },
+      watch: false,
+      max_memory_restart: "300M",
       env_production: {
         NODE_ENV: "production",
       },
     },
   ],
+
   deploy: {
     production: {
       user: process.env.DEPLOY_USER,
@@ -30,10 +27,18 @@ module.exports = {
       repo: process.env.DEPLOY_REPO,
       path: process.env.DEPLOY_PATH,
       key: process.env.DEPLOY_KEY,
-      "pre-deploy":
-        "scp -i ${key} .env.deploy ${user}@${host}:${path}/backend/",
-      "post-deploy":
-        "npm install && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
+
+      "pre-deploy-local": `
+        scp -i \${key} ../../.env.deploy \${user}@\${host}:\${path}/current/backend/.env.deploy &&
+        scp -i \${key} .env \${user}@\${host}:\${path}/current/backend/.env
+      `,
+
+      "post-deploy": `
+        cd backend &&
+        npm ci --only=production &&
+        npm run build &&
+        pm2 startOrRestart backend/ecosystem.config.js --env production
+      `,
     },
   },
 };

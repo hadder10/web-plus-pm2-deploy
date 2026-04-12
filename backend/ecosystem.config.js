@@ -28,9 +28,12 @@ module.exports = {
       repo: process.env.DEPLOY_REPO,
       path: DEPLOY_PATH,
       key: DEPLOY_KEY,
-      "pre-deploy-local": `scp -i "${DEPLOY_KEY}" ../.env.deploy "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/current/backend/.env.deploy" && scp -i "${DEPLOY_KEY}" .env "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/current/backend/.env"`,
+      "pre-deploy-local": [
+        `scp -i ${DEPLOY_KEY} ../.env.deploy ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/current/backend/.env.deploy`,
+        `scp -i ${DEPLOY_KEY} .env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/current/backend/.env`,
+      ].join(" && "),
       "post-deploy":
-        "cd backend && npm ci --only=production && npm run build && pm2 startOrRestart backend/ecosystem.config.js --env production",
+        "cd backend && npm ci --only=production && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
     },
   },
 };

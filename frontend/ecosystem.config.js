@@ -15,11 +15,7 @@ module.exports = {
       path: process.env.DEPLOY_PATH,
       key: process.env.DEPLOY_KEY,
 
-      "post-deploy": `
-        cd frontend &&
-        npm ci &&
-        npm run build
-      `,
+      "post-deploy": "cd frontend && npm ci && npm run build",
     },
   },
 };

@@ -21,7 +21,7 @@ module.exports = {
       path: DEPLOY_PATH,
       key: DEPLOY_KEY,
       ssh_options: "ForwardAgent=yes",
-      "post-deploy": "cd frontend && pwd && npm ci && npm run build",
+      "post-deploy": "cd frontend && pwd && npm install && npm run dev",
     },
   },
 };

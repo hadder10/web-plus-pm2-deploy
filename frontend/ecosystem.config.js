@@ -1,17 +1,24 @@
-const dotenv = require("dotenv");
+const doteenv = require("dotenv");
 
-dotenv.config({ path: "./.env.deploy" });
+doteenv.config({ path: "./.env.deploy" });
 
 const {
   DEPLOY_USER,
   DEPLOY_HOST,
+  DEPLOY_PATH,
   DEPLOY_REF,
   DEPLOY_REPOSITORY,
-  DEPLOY_PATH,
   DEPLOY_KEY,
 } = process.env;
 
 module.exports = {
+  apps: [
+    {
+      name: "mesto-front",
+      script: "./dist/app.js",
+    },
+  ],
+
   deploy: {
     production: {
       user: DEPLOY_USER,
@@ -20,7 +27,7 @@ module.exports = {
       repo: DEPLOY_REPOSITORY,
       path: DEPLOY_PATH,
       key: DEPLOY_KEY,
-      "post-deploy": "cd frontend && pwd && npm ci && npm run build",
+      "post-deploy": "cd frontend && pwd && npm i && npm run build",
     },
   },
 };

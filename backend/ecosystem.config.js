@@ -27,9 +27,5 @@ module.exports = {
       path: DEPLOY_PATH,
       key: DEPLOY_KEY,
       ssh_options: "ForwardAgent=yes",
-      "pre-deploy-local": `bash scripts/deployEnv.sh ${DEPLOY_USER}@${DEPLOY_HOST} ${DEPLOY_PATH}`,
-      "post-deploy":
-        "cd backend && pwd && npm install && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
-    },
   },
 };

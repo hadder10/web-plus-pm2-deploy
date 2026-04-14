@@ -27,5 +27,6 @@ module.exports = {
       path: DEPLOY_PATH,
       key: DEPLOY_KEY,
       ssh_options: "ForwardAgent=yes",
+    },
   },
 };

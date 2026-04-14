@@ -1,21 +1,19 @@
-const path = require("path");
-require("dotenv").config({
-  path: path.join(__dirname, "../.env.deploy"),
-});
+const dotenv = require("dotenv");
+
+dotenv.config({ path: "./.env.deploy" });
+
+const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_REF, DEPLOY_REPOSITORY, DEPLOY_PATH } =
+  process.env;
 
 module.exports = {
-  apps: [],
-
   deploy: {
     production: {
-      user: process.env.DEPLOY_USER,
-      host: process.env.DEPLOY_HOST,
-      ref: process.env.DEPLOY_REF,
-      repo: process.env.DEPLOY_REPO,
-      path: process.env.DEPLOY_PATH,
-      key: process.env.DEPLOY_KEY,
-
-      "post-deploy": "cd frontend && npm ci && npm run build",
+      user: DEPLOY_USER,
+      host: DEPLOY_HOST,
+      ref: DEPLOY_REF,
+      repo: DEPLOY_REPOSITORY,
+      path: DEPLOY_PATH,
+      "post-deploy": "cd frontend && pwd && npm ci && npm run build",
     },
   },
 };

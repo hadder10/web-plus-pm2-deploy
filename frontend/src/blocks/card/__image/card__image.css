@@ -1,7 +1,7 @@
 .card__image {
-  min-height: 282px;
-  -webkit-background-size: cover;
-  background-size: cover;
+  height: 282px;
+  object-fit: cover;
+  width: 100%;
 }
 
 .card__image:hover {

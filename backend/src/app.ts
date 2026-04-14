@@ -1,36 +1,50 @@
-import "dotenv/config";
-
-import express from "express";
+import express, { Express } from "express";
 import mongoose from "mongoose";
-import cookieParser from "cookie-parser";
-import cors from "cors";
 import { errors } from "celebrate";
-import errorHandler from "./middlewares/error-handler";
-import { DB_ADDRESS } from "./config";
-import routes from "./routes";
+import authRouter from "./routes/authRoutes";
+import userRouter from "./routes/userRoutes";
+import cardRouter from "./routes/cardRoutes";
+import { auth } from "./middlewares/auth";
+import { requestLogger, errorLogger } from "./middlewares/logger";
+import errorHandler from "./middlewares/errorHandler";
+import HTTP_STATUS from "./utils/statusCodes";
 
-const { PORT = 3000 } = process.env;
-const app = express();
-mongoose.connect(DB_ADDRESS);
+const app: Express = express();
+const PORT = 3000;
 
-app.use(
-  cors({
-    origin: "https://eioven-mesto.nomorepartiessite.ru",
-    credentials: true,
-  }),
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
-app.get("/crash-test", () => {
+app.get("/crash-test", (req, res) => {
   setTimeout(() => {
     throw new Error("Сервер сейчас упадёт");
   }, 0);
 });
 
-app.use(routes);
+app.use(requestLogger);
+
+app.use("/", authRouter);
+app.use("/cards", cardRouter);
+app.use("/users", userRouter);
+
+app.use((req, res) => {
+  res
+    .status(HTTP_STATUS.NOT_FOUND)
+    .send({ message: "Запрашиваемый ресурс не найден" });
+});
+
+app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log("ok"));
+async function start() {
+  await mongoose.connect("mongodb://localhost:27017/mestodb");
+  console.log("Connected to MongoDB database: mestodb");
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+start().catch((err) => {
+  console.error("MongoDB connection error:", err);
+});

@@ -1,39 +1,27 @@
-const path = require("path");
-require("dotenv").config({
-  path: path.join(__dirname, "../.env.deploy"),
-});
+const dotenv = require("dotenv");
 
-const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_PATH, DEPLOY_KEY } = process.env;
+dotenv.config({ path: "./.env.deploy" });
+
+const { DEPLOY_USER, DEPLOY_HOST, DEPLOY_REF, DEPLOY_REPOSITORY, DEPLOY_PATH } =
+  process.env;
 
 module.exports = {
   apps: [
     {
-      name: "backend",
+      name: "mesto",
       script: "dist/app.js",
-      instances: "max",
-      exec_mode: "cluster",
-      autorestart: true,
-      watch: false,
-      max_memory_restart: "300M",
-      env_production: {
-        NODE_ENV: "production",
-      },
     },
   ],
   deploy: {
     production: {
       user: DEPLOY_USER,
       host: DEPLOY_HOST,
-      ref: process.env.DEPLOY_REF,
-      repo: process.env.DEPLOY_REPO,
+      ref: DEPLOY_REF,
+      repo: DEPLOY_REPOSITORY,
       path: DEPLOY_PATH,
-      key: DEPLOY_KEY,
-      "pre-deploy-local": [
-        `scp -i ${DEPLOY_KEY} ../.env.deploy ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/current/backend/.env.deploy`,
-        `scp -i ${DEPLOY_KEY} .env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/current/backend/.env`,
-      ].join(" && "),
+      "pre-deploy-local": `bash scripts/deployEnv.sh ${DEPLOY_USER}@${DEPLOY_HOST} ${DEPLOY_PATH}`,
       "post-deploy":
-        "cd backend && npm ci --only=production && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
+        "cd backend && pwd && npm ci && npm run build && pm2 startOrRestart ecosystem.config.js --env production",
     },
   },
 };
